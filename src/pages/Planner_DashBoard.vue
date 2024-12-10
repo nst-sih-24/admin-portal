@@ -117,8 +117,7 @@ export default defineComponent({
         ];
 
         const newsList = [
-            "New feature released: Instant Refunds.",
-            "Employee of the Month: John Doe.",
+            "Employee of the Month: Roni Maity",
             "System Maintenance Scheduled for Dec 15.",
             "Record-breaking ticket sales yesterday!",
         ];

@@ -18,60 +18,43 @@
         <q-separator spaced />
 
         <!-- Navigation -->
-        <q-item clickable v-ripple to="/defi" class="text-white">
-          <q-item-section avatar>
-            <q-icon name="bolt" color="lime" />
-          </q-item-section>
-          <q-item-section>DeFi</q-item-section>
+        <q-item clickable v-ripple to="/PlannerDashboard" class="text-white">
+              <q-item-section avatar>
+              <q-icon name="person" color="lime" />
+              </q-item-section>
+              <q-item-section>Dashboard</q-item-section>
         </q-item>
 
-        <q-expansion-item
-          label="Yields"
-          icon="analytics"
-          class="text-white"
-          header-class="q-py-none text-white"
-        >
-          <q-list>
-            <q-item clickable v-ripple>
-              <q-item-section>Details</q-item-section>
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-
-        <q-expansion-item
-          label="DEXes"
-          icon="currency_exchange"
-          class="text-white"
-          header-class="q-py-none text-white"
-        >
-          <q-list>
-            <q-item clickable v-ripple>
-              <q-item-section>Options</q-item-section>
-            </q-item>
-          </q-list>
-        </q-expansion-item>
-
-        <q-item clickable v-ripple to="/protocols" class="text-white">
+        <q-item clickable v-ripple to="/PlannerCreateNewRoutes" class="text-white">
           <q-item-section avatar>
-            <q-icon name="trending_up" color="white" />
+            <q-icon name="route" color="lime" />
           </q-item-section>
-          <q-item-section>Protocols</q-item-section>
+          <q-item-section>Create New Routes</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/settings" class="text-white">
-          <q-item-section avatar>
-            <q-icon name="settings" color="white" />
-          </q-item-section>
-          <q-item-section>Settings</q-item-section>
+        <q-item clickable v-ripple to="/PlannerJourneyStats" class="text-white">
+              <q-item-section avatar>
+              <q-icon name="info" color="lime" />
+              </q-item-section>
+              <q-item-section>Journey Details</q-item-section>
         </q-item>
 
-        <q-separator spaced />
-        <q-item clickable v-ripple to="/logout" class="text-negative">
-          <q-item-section avatar>
-            <q-icon name="logout" color="negative" />
-          </q-item-section>
-          <q-item-section>Log Out</q-item-section>
+        <q-item clickable v-ripple to="/PlannerRoutesTrafficAnalysis" class="text-white">
+              <q-item-section avatar>
+              <q-icon name="query_stats" color="lime" />
+              </q-item-section>
+              <q-item-section>Traffic Analysis</q-item-section>
         </q-item>
+
+        <q-item clickable v-ripple to="/PlannerVehicleDetails" class="text-white">
+              <q-item-section avatar>
+              <q-icon name="directions_bus" color="lime" />
+              </q-item-section>
+              <q-item-section>Vehicle Details</q-item-section>
+        </q-item>
+
+
+
       </q-list>
     </q-drawer>
 
