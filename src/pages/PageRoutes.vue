@@ -4,7 +4,17 @@
       <div class="col-12">
         <q-card>
           <q-card-section>
-            <div class="text-h6">Routes</div>
+            <div class="row justify-between items-center">
+              <div class="text-h6">Routes</div>
+              <div>
+                <q-btn
+                  color="primary"
+                  label="Add Route"
+                  icon="eva-plus"
+                  @click="addRoute"
+                />
+              </div>
+            </div>
           </q-card-section>
         </q-card>
       </div>
@@ -18,14 +28,31 @@
               v-for="route in routes"
               :key="route.id"
               clickable
-              @click="selectRoute(route.id)"
               :class="{ 'bg-blue-3': selectedRouteId === route.id }"
             >
-              <q-item-section>
+              <q-item-section @click.stop="selectRoute(route.id)">
                 <q-item-label>{{ route.name }}</q-item-label>
               </q-item-section>
-              <q-item-section side>
-                <q-icon name="eva-chevron-right-outline"></q-icon>
+              <q-item-section side class="row">
+                <div class="items-center q-gutter-sm">
+                  <!-- Edit Route Button -->
+                  <q-btn
+                    icon="edit"
+                    color="primary"
+                    round
+                    flat
+                    dense
+                    @click.stop="editRoute(route)"
+                  />
+
+                  <q-btn
+                    icon="chevron_right"
+                    round
+                    flat
+                    dense
+                    @click.stop="selectRoute(route.id)"
+                  />
+                </div>
               </q-item-section>
             </q-item>
           </q-list>
@@ -34,8 +61,6 @@
 
       <!-- ROUTE STOPS & MANAGEMENT -->
       <div class="col-6" v-if="selectedRouteId">
-        <!-- <pre>{{ selectedRouteStops }}</pre> -->
-
         <!-- Placeholder for map -->
         <q-card class="q-mb-md">
           <q-item-label header>Map</q-item-label>
@@ -79,6 +104,15 @@
             </div>
           </q-card-section>
 
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>
+                <q-icon name="info"></q-icon>
+                Drag to rearrange route stops below.
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+
           <q-list>
             <!-- Draggable stops list -->
             <draggable
@@ -97,7 +131,15 @@
                     <q-item-label>{{ element.stop.name }}</q-item-label>
                   </q-item-section>
                   <q-item-section side>
-                    <q-icon name="eva-chevron-right-outline"></q-icon>
+                    <!-- Delete Route Stop Button -->
+                    <q-btn
+                      icon="delete"
+                      color="negative"
+                      round
+                      flat
+                      dense
+                      @click.stop="deleteRouteStop(element.id)"
+                    />
                   </q-item-section>
                 </q-item>
               </template>
@@ -113,6 +155,64 @@
         </q-card>
       </div>
     </div>
+
+    <!-- Add/Edit Route Dialog -->
+    <q-dialog v-model="showRouteDialog">
+      <q-card v-if="selectedRoute">
+        <q-card-section>
+          <div class="text-h6">
+            {{ isEditRoute ? "Edit Route" : "Add Route" }}
+            <q-btn
+              flat
+              round
+              dense
+              icon="close"
+              aria-label="Close"
+              v-close-popup
+              class="float-right"
+            />
+          </div>
+        </q-card-section>
+
+        <q-separator></q-separator>
+
+        <q-card-section>
+          <div class="row q-col-gutter-sm">
+            <div class="col-12">
+              <q-input
+                v-model="selectedRoute.name"
+                placeholder="Route Name"
+                outlined
+                dense
+                clearable
+                autofocus
+              />
+            </div>
+
+            <div class="col-auto" v-if="isEditRoute">
+              <q-btn
+                icon="delete"
+                color="negative"
+                round
+                flat
+                @click="deleteRoute(selectedRoute)"
+                v-close-popup
+              ></q-btn>
+            </div>
+
+            <div class="col">
+              <q-btn
+                label="Save"
+                color="primary"
+                rounded
+                class="full-width"
+                @click="saveRoute"
+              ></q-btn>
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -120,12 +220,19 @@
 import { ref, onMounted } from "vue";
 import { supabase } from "src/boot/supabase";
 import Draggable from "vuedraggable";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 const routes = ref([]);
 const selectedRouteId = ref(null);
 const selectedRouteStops = ref([]);
 const allStops = ref([]);
 const selectedStopToAdd = ref(null);
+
+const showRouteDialog = ref(false);
+const selectedRoute = ref(null);
+const isEditRoute = ref(false);
 
 onMounted(() => {
   fetchRoutes();
@@ -142,7 +249,6 @@ const fetchRoutes = async () => {
 };
 
 const fetchAllStops = async () => {
-  // Assuming 'stop' table is structured with `stop_id` and `name`.
   const { data, error } = await supabase.from("stop").select("*");
   if (error) {
     console.error(error);
@@ -174,7 +280,6 @@ const fetchRouteStops = async (routeId) => {
 const addStopToRoute = async () => {
   if (!selectedStopToAdd.value || !selectedRouteId.value) return;
 
-  // Determine new order: one more than the last stop's order or 1 if none
   const maxOrder = selectedRouteStops.value.reduce(
     (acc, rs) => Math.max(acc, rs.order),
     0
@@ -192,30 +297,162 @@ const addStopToRoute = async () => {
 
   if (error) {
     console.error(error);
+    $q.notify({ type: "negative", message: "Failed to add stop to route" });
   } else {
-    selectedRouteStops.value.push(...data); // Add new stop data to the list
+    selectedRouteStops.value.push(...data);
     selectedStopToAdd.value = null;
+    $q.notify({ type: "positive", message: "Stop added to route!" });
   }
 };
 
-// Called after drag-and-drop ends
+const deleteRouteStop = async (routeStopId) => {
+  $q.dialog({
+    title: "Confirm",
+    message: "Are you sure you want to delete this stop from the route?",
+    cancel: true,
+    persistent: true,
+    ok: { label: "Delete", color: "negative", flat: true },
+  }).onOk(async () => {
+    try {
+      $q.loading.show();
+      const { error } = await supabase
+        .from("route_stop")
+        .delete()
+        .eq("id", routeStopId);
+      if (error) {
+        console.error(error);
+        $q.notify({ type: "negative", message: "Failed to delete stop" });
+      } else {
+        $q.notify({ type: "positive", message: "Stop deleted" });
+        selectedRouteStops.value = selectedRouteStops.value.filter(
+          (rs) => rs.id !== routeStopId
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      $q.notify({ type: "negative", message: "Error deleting stop" });
+    } finally {
+      $q.loading.hide();
+    }
+  });
+};
+
 const updateRouteStopOrder = async (evt) => {
   for (const rs of selectedRouteStops.value) {
     const { error } = await supabase
       .from("route_stop")
       .update({ order: rs.order })
       .eq("id", rs.id);
-    if (error) console.error(error);
+    if (error) {
+      console.error(error);
+      $q.notify({ type: "negative", message: "Failed to update order" });
+    }
   }
 };
 
 const selectStop = (stopId) => {
   console.log("Selected stop:", stopId);
 };
+
+function addRoute() {
+  selectedRoute.value = { name: "" };
+  isEditRoute.value = false;
+  showRouteDialog.value = true;
+}
+
+function editRoute(route) {
+  selectedRoute.value = { ...route };
+  isEditRoute.value = true;
+  showRouteDialog.value = true;
+}
+
+async function saveRoute() {
+  try {
+    $q.loading.show();
+    if (isEditRoute.value) {
+      // update existing route
+      const { error } = await supabase
+        .from("route")
+        .update({ name: selectedRoute.value.name })
+        .eq("id", selectedRoute.value.id);
+
+      if (error) {
+        console.error(error);
+        $q.notify({ type: "negative", message: "Failed to update route" });
+      } else {
+        $q.notify({ type: "positive", message: "Route updated!" });
+        fetchRoutes();
+      }
+    } else {
+      // insert new route
+      const { data, error } = await supabase
+        .from("route")
+        .insert({ name: selectedRoute.value.name })
+        .select("*");
+
+      if (error) {
+        console.error(error);
+        $q.notify({ type: "negative", message: "Failed to create route" });
+      } else {
+        $q.notify({ type: "positive", message: "Route created!" });
+        fetchRoutes();
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    $q.notify({ type: "negative", message: "Error saving route" });
+  } finally {
+    $q.loading.hide();
+    showRouteDialog.value = false;
+  }
+}
+
+function deleteRoute(route) {
+  $q.dialog({
+    title: "Confirm",
+    message: "Are you sure you want to delete this route?",
+    cancel: true,
+    persistent: true,
+    ok: { label: "Delete", color: "negative", flat: true },
+  }).onOk(async () => {
+    try {
+      $q.loading.show();
+      const { error } = await supabase
+        .from("route")
+        .delete()
+        .eq("id", route.id);
+      if (error) {
+        console.error(error);
+        $q.notify({ type: "negative", message: "Failed to delete route" });
+      } else {
+        $q.notify({ type: "positive", message: "Route deleted" });
+        fetchRoutes();
+        // If deleted route was selected, clear selection
+        if (selectedRouteId.value === route.id) {
+          selectedRouteId.value = null;
+          selectedRouteStops.value = [];
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      $q.notify({ type: "negative", message: "Error deleting route" });
+    } finally {
+      $q.loading.hide();
+    }
+  });
+}
 </script>
 
 <style scoped>
 .dragging {
   opacity: 0.5;
+}
+
+.map-placeholder {
+  height: 200px;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
