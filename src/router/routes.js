@@ -28,13 +28,13 @@
 
 // export default routes
 
-import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
-    path: "/",
+    path: "/Planner",
     component: () => import("src/layouts/PlannerLayout.vue"),
     children: [
+
       { path: "", redirect: "/PlannerDashboard" },
       {
         path: "PlannerDashboard",
@@ -58,13 +58,47 @@ const routes = [
       },
     ],
   },
+
+
+  {
+    path: "/Schedular",
+    component: () => import("src/layouts/SchLayout.vue"),
+    children: [
+
+      { path: "", redirect: "/schedularDashboard" },
+      {
+        path: "schedularDashboard",
+        component: () => import("src/pages/Schedular_Dashboard.vue"),
+      },
+      {
+        path: "schedularAssignCrew",
+        component: () => import("src/pages/Sch_AssignCrew.vue"),
+      },
+      {
+        path: "schedularAvailableCrew",
+        component: () => import("src/pages/Sch_AvailableCrew.vue"),
+      },
+      {
+        path: "Sch_Crew_Details",
+        component: () => import("src/pages/Sch_crewDetails.vue"),
+      },
+      {
+        path: "Sch_Manage_crew",
+        component: () => import("src/pages/Sch_ManageCrew.vue"),
+      },
+    ],
+  },
+
+
+
+
   // {
   //   path: "/login",
   //   component: () => import("layouts/LoginLayout.vue"),
   //   children: [{ path: "", component: () => import("src/pages/AuthPage.vue") }],
   // },
   {
-    path: "/admin",
+    path: "/",
     component: () => import("layouts/AdminLayout.vue"),
     children: [
       {

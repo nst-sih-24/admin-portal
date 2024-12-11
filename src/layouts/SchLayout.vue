@@ -10,7 +10,7 @@
             PRO
           </q-item-label>
           <q-img
-            src="/src/assets/—Pngtree—doraemon pictures_7031645.png"
+            src="/src/assets/bus_logo.png"
             alt="NavSmart Logo"
             style=" height: 70%; border-radius: 50%;"
           />
@@ -18,21 +18,21 @@
         <q-separator spaced />
 
         <!-- Navigation -->
-        <q-item clickable v-ripple to="/Sch_Dashboard" class="text-white">
+        <q-item clickable v-ripple to="/schedularDashboard" class="text-white">
               <q-item-section avatar>
               <q-icon name="person" color="lime" />
               </q-item-section>
               <q-item-section>Dashboard</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/Sch_Assign_crew" class="text-white">
+        <q-item clickable v-ripple to="/schedularAssignCrew" class="text-white">
           <q-item-section avatar>
             <q-icon name="assignment_add" color="lime" />
           </q-item-section>
           <q-item-section>Crew Assign</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/Sch_Avail_crew" class="text-white">
+        <q-item clickable v-ripple to="/schedularAvailableCrew" class="text-white">
               <q-item-section avatar>
               <q-icon name="event_available" color="lime" />
               </q-item-section>
@@ -52,9 +52,6 @@
               </q-item-section>
               <q-item-section>Manage Crew</q-item-section>
         </q-item>
-
-
-
       </q-list>
     </q-drawer>
 

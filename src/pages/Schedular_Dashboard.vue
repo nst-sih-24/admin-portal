@@ -1,6 +1,5 @@
 <template>
   <q-page padding>
-    <h1>THis will be schedular dashboard</h1>
       <!-- Dashboard Wrapper with Light Theme -->
       <div class="dashboard-wrapper">
 

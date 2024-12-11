@@ -31,14 +31,6 @@
         </div>
       </div>
     </q-page-container>
-
-    <!-- Footer Section -->
-    <q-footer class="bg-gradient-to-r from-teal-400 to-cyan-500 text-white">
-      <div class="q-pa-md text-center">
-        <q-btn to="/help" flat label="Help & Support" class="q-mr-md" />
-        <p>&copy; 2024 Byte Knightz</p>
-      </div>
-    </q-footer>
   </q-layout>
 </template>
 

@@ -10,7 +10,7 @@
             PRO
           </q-item-label>
           <q-img
-            src="/src/assets/—Pngtree—doraemon pictures_7031645.png"
+            src="/src/assets/bus_logo.png"
             alt="NavSmart Logo"
             style=" height: 70%; border-radius: 50%;"
           />
@@ -61,6 +61,9 @@
     <!-- Page Content -->
     <q-page-container>
       <q-page>
+        <div class="q-pa-md q-gutter-sm">
+          <q-btn label="Top" icon="keyboard_arrow_up" color="primary" @click="open('top')" />
+        </div>
         <RouterView />
       </q-page>
     </q-page-container>
@@ -75,6 +78,9 @@ defineOptions({
 });
 
 const drawerOpen = ref(false);
+
+
+
 </script>
 
 <style>
