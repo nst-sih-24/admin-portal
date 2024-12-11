@@ -11,7 +11,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> NavSmart Admin </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
@@ -38,6 +38,21 @@ import { ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 
 const linksList = [
+  {
+    title: "Dashboard",
+    icon: "dashboard",
+    link: "/admin",
+  },
+  {
+    title: "Trips",
+    icon: "event",
+    link: "/admin/trips",
+  },
+  {
+    title: "Schedules",
+    icon: "schedule",
+    link: "/admin/schedules",
+  },
   {
     title: "Stops",
     icon: "pin_drop",
