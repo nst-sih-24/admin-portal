@@ -21,6 +21,8 @@
 
       <!-- ROUTE LIST -->
       <div class="col-6">
+        <!-- <pre>{{ fetchedRouteStops }}</pre>
+        <pre>{{ selectedRouteStops }}</pre> -->
         <q-card>
           <q-list>
             <q-item-label header>Routes</q-item-label>
@@ -319,6 +321,8 @@ const fetchAllStops = async () => {
   }
 };
 
+// const fetchedRouteStops = ref([]);
+
 const selectRoute = async (routeId) => {
   selectedRouteId.value = routeId;
   selectedRouteStops.value = await fetchRouteStops(routeId);
@@ -335,6 +339,7 @@ const fetchRouteStops = async (routeId) => {
     console.error(error);
     return [];
   } else {
+    // fetchedRouteStops.value = data;
     return data;
   }
 };
@@ -400,12 +405,14 @@ const deleteRouteStop = async (routeStopId) => {
 };
 
 const updateRouteStopOrder = async (evt) => {
-  for (const rs of selectedRouteStops.value) {
+  for (let i = 0; i < selectedRouteStops.value.length; i++) {
+    const rs = selectedRouteStops.value[i];
     const { error } = await supabase
       .from("route_stop")
-      .update({ order: rs.order })
+      .update({ order: i })
       .eq("id", rs.id)
       .select("*");
+    rs.order = i;
     if (error) {
       console.error(error);
       $q.notify({ type: "negative", message: "Failed to update order" });
