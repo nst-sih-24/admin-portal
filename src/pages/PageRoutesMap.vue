@@ -86,7 +86,7 @@ const COLORS = [
   "red",
   "blue",
   "green",
-  "yellow",
+  // "yellow",
   "purple",
   "orange",
   "pink",

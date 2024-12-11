@@ -28,21 +28,15 @@
 
 // export default routes
 
-
 const routes = [
   {
     path: "/Planner",
     component: () => import("src/layouts/PlannerLayout.vue"),
     children: [
-
       { path: "", redirect: "/PlannerDashboard" },
       {
         path: "PlannerDashboard",
         component: () => import("src/pages/Planner_DashBoard.vue"),
-      },
-      {
-        path: "PlannerCreateNewRoutes",
-        component: () => import("src/pages/Planner_create_new_routes.vue"),
       },
       {
         path: "PlannerJourneyStats",
@@ -59,15 +53,12 @@ const routes = [
     ],
   },
 
-
   {
-    path: "/Schedular",
+    path: "/schedular",
     component: () => import("src/layouts/SchLayout.vue"),
     children: [
-
-      { path: "", redirect: "/schedularDashboard" },
       {
-        path: "schedularDashboard",
+        path: "",
         component: () => import("src/pages/Schedular_Dashboard.vue"),
       },
       {
@@ -89,9 +80,6 @@ const routes = [
     ],
   },
 
-
-
-
   // {
   //   path: "/login",
   //   component: () => import("layouts/LoginLayout.vue"),
@@ -103,11 +91,16 @@ const routes = [
     component: () => import("layouts/AdminLayout.vue"),
     children: [
       {
-        path: "", redirect: "/dashboard",
+        path: "",
+        redirect: "/dashboard",
       },
       {
         path: "dashboard",
         component: () => import("src/pages/PageDashboard.vue"),
+      },
+      {
+        path: 'users',
+        component: () => import('src/pages/PageUsers.vue')
       },
       {
         path: "stops",
@@ -121,6 +114,22 @@ const routes = [
         path: "routes/map",
         component: () => import("src/pages/PageRoutesMap.vue"),
       },
+      {
+        path: "vehicles",
+        component: () => import("src/pages/PageVehicles.vue"),
+      },
+      {
+        path: 'tickets',
+        component: () => import('src/pages/PageTickets.vue')
+      },
+      {
+        path: 'schedules',
+        component: () => import('src/pages/PageSchedules.vue')
+      },
+      {
+        path: 'trips',
+        component: () => import('src/pages/PageTrips.vue')
+      }
     ],
   },
 

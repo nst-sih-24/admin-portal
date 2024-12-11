@@ -47,6 +47,11 @@ const linksList = [
     link: "/trips",
   },
   {
+    title: "Tickets",
+    icon: "receipt",
+    link: "/tickets",
+  },
+  {
     title: "Schedules",
     icon: "schedule",
     link: "/schedules",
@@ -72,9 +77,9 @@ const linksList = [
     link: "/vehicles",
   },
   {
-    title: "Drivers",
+    title: "Users",
     icon: "person",
-    link: "/drivers",
+    link: "/users",
   },
 ];
 
