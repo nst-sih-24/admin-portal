@@ -97,10 +97,18 @@ const routes = [
   //   component: () => import("layouts/LoginLayout.vue"),
   //   children: [{ path: "", component: () => import("src/pages/AuthPage.vue") }],
   // },
+
   {
     path: "/",
     component: () => import("layouts/AdminLayout.vue"),
     children: [
+      {
+        path: "", redirect: "/dashboard",
+      },
+      {
+        path: "dashboard",
+        component: () => import("src/pages/PageDashboard.vue"),
+      },
       {
         path: "stops",
         component: () => import("src/pages/PageStops.vue"),

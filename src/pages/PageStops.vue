@@ -53,13 +53,15 @@
             :options="{
               mapTypeControl: false,
               streetViewControl: false,
-              disableDefaultUI : true
+              disableDefaultUI: true,
             }"
           >
-            <AdvancedMarker :options="{
-              position: mapCenter,
-              title: selectedStop.name,
-            }" />
+            <AdvancedMarker
+              :options="{
+                position: mapCenter,
+                title: selectedStop.name,
+              }"
+            />
           </GoogleMap>
         </q-card>
       </div>

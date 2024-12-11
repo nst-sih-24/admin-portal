@@ -39,37 +39,37 @@ const linksList = [
   {
     title: "Dashboard",
     icon: "dashboard",
-    link: "/admin",
+    link: "/",
   },
   {
     title: "Trips",
     icon: "event",
-    link: "/admin/trips",
+    link: "/trips",
   },
   {
     title: "Schedules",
     icon: "schedule",
-    link: "/admin/schedules",
+    link: "/schedules",
   },
   {
     title: "Stops",
     icon: "pin_drop",
-    link: "/admin/stops",
+    link: "/stops",
   },
   {
     title: "Routes",
     icon: "directions",
-    link: "/admin/routes",
+    link: "/routes",
   },
   {
     title: "Vehicles",
     icon: "directions_bus",
-    link: "/admin/vehicles",
+    link: "/vehicles",
   },
   {
     title: "Drivers",
     icon: "person",
-    link: "/admin/drivers",
+    link: "/drivers",
   },
 ];
 

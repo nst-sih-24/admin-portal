@@ -65,8 +65,43 @@
         <q-card class="q-mb-md">
           <q-item-label header>Map</q-item-label>
           <q-card-section>
-            <div class="map-placeholder"></div>
-            <!-- TODO: Add map to choose a point as a new stop -->
+            <GoogleMap
+              :api-key="GMAP_API_KEY"
+              :center="mapCenter"
+              :zoom="11"
+              style="height: 300px"
+              mapId="117cde968721239e"
+              :options="{
+                mapTypeControl: false,
+                streetViewControl: false,
+                disableDefaultUI: true,
+              }"
+            >
+              <AdvancedMarker
+                v-for="routeStop in selectedRouteStops"
+                :options="{
+                  position: {
+                    lat: parseFloat(routeStop.stop.latitude),
+                    lng: parseFloat(routeStop.stop.longitude),
+                  },
+                  title: routeStop.stop.name,
+                }"
+                :key="routeStop.id"
+              />
+
+              <Polyline
+                :options="{
+                  path: selectedRouteStops.map((rs) => ({
+                    lat: parseFloat(rs.stop.latitude),
+                    lng: parseFloat(rs.stop.longitude),
+                  })),
+                  geodesic: true,
+                  strokeColor: '#FF0000',
+                  strokeOpacity: 1.0,
+                  strokeWeight: 2,
+                }"
+              />
+            </GoogleMap>
           </q-card-section>
 
           <q-separator></q-separator>
@@ -217,10 +252,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { supabase } from "src/boot/supabase";
 import Draggable from "vuedraggable";
 import { useQuasar } from "quasar";
+
+import { GoogleMap, AdvancedMarker, Polyline } from "vue3-google-map";
+
+const GMAP_API_KEY = import.meta.env.VITE_GMAP_API_KEY;
 
 const $q = useQuasar();
 
@@ -237,6 +276,29 @@ const isEditRoute = ref(false);
 onMounted(() => {
   fetchRoutes();
   fetchAllStops();
+});
+
+const mapCenter = computed(() => {
+  if (selectedRouteStops.value.length) {
+    // find average lat/lng of all stops
+    const { lat, lng } = selectedRouteStops.value.reduce(
+      (acc, rs) => {
+        acc.lat += parseFloat(rs.stop.latitude);
+        acc.lng += parseFloat(rs.stop.longitude);
+        return acc;
+      },
+      { lat: 0, lng: 0 }
+    );
+
+    console.log("Map center:", lat, lng);
+
+    return {
+      lat: lat / selectedRouteStops.value.length,
+      lng: lng / selectedRouteStops.value.length,
+    };
+  } else {
+    return { lat: 0, lng: 0 };
+  }
 });
 
 const fetchRoutes = async () => {
@@ -342,7 +404,8 @@ const updateRouteStopOrder = async (evt) => {
     const { error } = await supabase
       .from("route_stop")
       .update({ order: rs.order })
-      .eq("id", rs.id);
+      .eq("id", rs.id)
+      .select("*");
     if (error) {
       console.error(error);
       $q.notify({ type: "negative", message: "Failed to update order" });
