@@ -21,7 +21,24 @@
       </div>
 
       <div class="col-12">
-        <q-table :rows="stops" :columns="columns" row-key="stop_id"></q-table>
+        <q-table
+          :rows="stops"
+          :columns="columns"
+          row-key="stop_id"
+          :rows-per-page-options="[10, 20, 0]"
+        >
+          <template #body-cell-actions="props">
+            <q-td :props="props">
+              <q-btn
+                icon="edit"
+                color="primary"
+                round
+                flat
+                @click="editStop(props.row)"
+              ></q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </div>
 
       <div class="col-6">
@@ -32,7 +49,7 @@
     </div>
 
     <q-dialog v-model="showStopDialog">
-      <q-card style="min-width: 400px">
+      <q-card v-if="selectedStop">
         <q-card-section>
           <div class="text-h6">
             Edit Stop
@@ -42,50 +59,77 @@
               dense
               icon="close"
               aria-label="Close"
-              @click="showStopDialog = false"
+              v-close-popup
               class="float-right"
             />
           </div>
         </q-card-section>
 
-        <q-spearator></q-spearator>
+        <q-separator></q-separator>
 
         <q-card-section>
-          <q-input
-            v-model="selectedStop.name"
-            placeholder="Stop Name"
-            outlined
-            dense
-            clearable
-            class="q-mb-md"
-          />
+          <div class="row q-col-gutter-sm">
+            <div class="col-12">
+              <q-input
+                v-model="selectedStop.name"
+                placeholder="Stop Name"
+                outlined
+                dense
+                clearable
+                autofocus
+              />
+            </div>
+            <div class="col-12">
+              <q-input
+                v-model="selectedStop.plus_code_address"
+                placeholder="Plus Code Address"
+                outlined
+                dense
+                clearable
+              ></q-input>
+            </div>
+            <div class="col-6">
+              <q-input
+                v-model="selectedStop.latitude"
+                placeholder="Latitude"
+                outlined
+                dense
+                clearable
+              />
+            </div>
+            <div class="col-6">
+              <q-input
+                v-model="selectedStop.longitude"
+                placeholder="Longitude"
+                outlined
+                dense
+                clearable
+              ></q-input>
+            </div>
 
-          <q-input
-            v-model="selectedStop.plus_code_address"
-            placeholder="Plus Code Address"
-            outlined
-            dense
-            clearable
-          ></q-input>
+            <div class="col-auto" v-if="isEdit">
+              <q-btn
+                icon="delete"
+                color="negative"
+                round
+                flat
+                @click="deleteStop"
+                v-close-popup
+              ></q-btn>
+            </div>
+
+            <div class="col">
+              <q-btn
+                label="Save"
+                color="primary"
+                rounded
+                class="full-width"
+                @click="saveStop"
+              ></q-btn>
+            </div>
+          </div>
 
           <!-- TODO: map picker -->
-
-          <q-input
-            v-model="selectedStop.latitude"
-            placeholder="Latitude"
-            outlined
-            dense
-            clearable
-            class="q-mb-md"
-          />
-
-          <q-input
-            v-model="selectedStop.longitude"
-            placeholder="Longitude"
-            outlined
-            dense
-            clearable
-          ></q-input>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -95,6 +139,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { supabase } from "src/boot/supabase";
+import { useQuasar } from "quasar";
+
+const $q = useQuasar();
 
 const stops = ref([]);
 
@@ -123,15 +170,43 @@ const columns = [
     align: "left",
     field: "longitude",
   },
+  {
+    name: "actions",
+    label: "Actions",
+    align: "center",
+    field: "actions",
+    format: (val, row) => {
+      return [
+        {
+          name: "edit",
+          icon: "eva-edit",
+          color: "primary",
+          size: "md",
+          onClick: () => editStop(row),
+        },
+      ];
+    },
+  },
 ];
 
 const fetchStops = async () => {
-  const { data, error } = await supabase.from("stop").select("*");
+  try {
+    const { data, error } = await supabase
+      .from("stop")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  if (error) {
+    if (error) {
+      console.error(error);
+    } else {
+      stops.value = data;
+    }
+  } catch (error) {
     console.error(error);
-  } else {
-    stops.value = data;
+    $q.notify({
+      type: "negative",
+      message: "Failed to fetch stops",
+    });
   }
 };
 
@@ -152,6 +227,7 @@ onMounted(() => {
 
 const selectedStop = ref(null);
 
+const isEdit = ref(false);
 const showStopDialog = ref(false);
 
 function addStop() {
@@ -161,6 +237,105 @@ function addStop() {
     latitude: "",
     longitude: "",
   };
+  isEdit.value = false;
   showStopDialog.value = true;
+}
+
+function editStop(stop) {
+  selectedStop.value = { ...stop };
+  isEdit.value = true;
+  showStopDialog.value = true;
+}
+
+async function saveStop() {
+  if (isEdit.value) {
+    // update
+    try {
+      $q.loading.show();
+      const { data, error } = await supabase
+        .from("stop")
+        .update(selectedStop.value)
+        .eq("stop_id", selectedStop.value.stop_id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        fetchStops();
+        $q.notify({
+          type: "positive",
+          message: "Stop updated!",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      $q.loading.hide();
+      showStopDialog.value = false;
+    }
+  } else {
+    // insert
+    try {
+      $q.loading.show();
+      const { data, error } = await supabase
+        .from("stop")
+        .insert(selectedStop.value);
+
+      if (error) {
+        console.error(error);
+      } else {
+        fetchStops();
+        $q.notify({
+          type: "positive",
+          message: "Stop created!",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      $q.notify({
+        type: "negative",
+        message: "Failed to save stop",
+      });
+    } finally {
+      $q.loading.hide();
+      showStopDialog.value = false;
+    }
+  }
+}
+
+async function deleteStop() {
+  // delete
+  $q.dialog({
+    title: "Confirm",
+    message: "Are you sure you want to delete this stop?",
+    cancel: true,
+    persistent: true,
+    ok: { label: "Delete", color: "negative", flat: true },
+  }).onOk(async () => {
+    try {
+      $q.loading.show();
+      const { data, error } = await supabase
+        .from("stop")
+        .delete()
+        .eq("stop_id", selectedStop.value.stop_id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        fetchStops();
+        $q.notify({
+          type: "positive",
+          message: "Stop deleted",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      $q.notify({
+        type: "negative",
+        message: "Failed to delete stop",
+      });
+    } finally {
+      $q.loading.hide();
+    }
+  });
 }
 </script>
