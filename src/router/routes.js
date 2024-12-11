@@ -58,11 +58,11 @@ const routes = [
       },
     ],
   },
-  {
-    path: "/login",
-    component: () => import("layouts/LoginLayout.vue"),
-    children: [{ path: "", component: () => import("src/pages/AuthPage.vue") }],
-  },
+  // {
+  //   path: "/login",
+  //   component: () => import("layouts/LoginLayout.vue"),
+  //   children: [{ path: "", component: () => import("src/pages/AuthPage.vue") }],
+  // },
   {
     path: "/admin",
     component: () => import("layouts/AdminLayout.vue"),
@@ -86,23 +86,25 @@ const routes = [
   },
 ];
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-});
+export default routes;
 
-// Navigation guard
-router.beforeEach((to, from, next) => {
-  if (to.path !== "/login" && !isLoggedIn()) {
-    // If not logged in and trying to access a restricted page, redirect to login
-    next("/login");
-  } else if (to.path === "/login" && isLoggedIn()) {
-    // If logged in and trying to access login page, redirect to planner dashboard
-    next("/PlannerDashboard");
-  } else {
-    // Otherwise, proceed to the route
-    next();
-  }
-});
+// const router = createRouter({
+//   history: createWebHistory(),
+//   routes,
+// });
 
-export default router;
+// // Navigation guard
+// router.beforeEach((to, from, next) => {
+//   if (to.path !== "/login" && !isLoggedIn()) {
+//     // If not logged in and trying to access a restricted page, redirect to login
+//     next("/login");
+//   } else if (to.path === "/login" && isLoggedIn()) {
+//     // If logged in and trying to access login page, redirect to planner dashboard
+//     next("/PlannerDashboard");
+//   } else {
+//     // Otherwise, proceed to the route
+//     next();
+//   }
+// });
+
+// export default router;
