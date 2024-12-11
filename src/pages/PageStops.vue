@@ -20,12 +20,13 @@
         </q-card>
       </div>
 
-      <div class="col-12">
+      <div class="col-8">
         <q-table
           :rows="stops"
           :columns="columns"
           row-key="stop_id"
           :rows-per-page-options="[10, 20, 0]"
+          @row-click="selectStop"
         >
           <template #body-cell-actions="props">
             <q-td :props="props">
@@ -41,9 +42,25 @@
         </q-table>
       </div>
 
-      <div class="col-6">
-        <q-card>
-          <!-- TODO: Add map to choose a point as a new stop -->
+      <div class="col-4">
+        <q-card v-if="selectedStop">
+          <GoogleMap
+            :api-key="GMAP_API_KEY"
+            :center="mapCenter"
+            :zoom="15"
+            style="height: 300px"
+            mapId="117cde968721239e"
+            :options="{
+              mapTypeControl: false,
+              streetViewControl: false,
+              disableDefaultUI : true
+            }"
+          >
+            <AdvancedMarker :options="{
+              position: mapCenter,
+              title: selectedStop.name,
+            }" />
+          </GoogleMap>
         </q-card>
       </div>
     </div>
@@ -137,9 +154,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { supabase } from "src/boot/supabase";
 import { useQuasar } from "quasar";
+
+import { GoogleMap, AdvancedMarker } from "vue3-google-map";
+
+const GMAP_API_KEY = import.meta.env.VITE_GMAP_API_KEY;
 
 const $q = useQuasar();
 
@@ -226,6 +247,24 @@ onMounted(() => {
 });
 
 const selectedStop = ref(null);
+
+const mapCenter = computed(() => {
+  if (!selectedStop.value) {
+    return {
+      lat: 28.6139,
+      lng: 77.209,
+    };
+  }
+
+  return {
+    lat: parseFloat(selectedStop.value.latitude),
+    lng: parseFloat(selectedStop.value.longitude),
+  };
+});
+
+const selectStop = (evt, row, idx) => {
+  selectedStop.value = { ...row };
+};
 
 const isEdit = ref(false);
 const showStopDialog = ref(false);
