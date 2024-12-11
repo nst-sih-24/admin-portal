@@ -62,6 +62,11 @@ const linksList = [
     link: "/routes",
   },
   {
+    title: "Map",
+    icon: "map",
+    link: "/routes/map",
+  },
+  {
     title: "Vehicles",
     icon: "directions_bus",
     link: "/vehicles",

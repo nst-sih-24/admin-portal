@@ -117,6 +117,10 @@ const routes = [
         path: "routes",
         component: () => import("src/pages/PageRoutes.vue"),
       },
+      {
+        path: "routes/map",
+        component: () => import("src/pages/PageRoutesMap.vue"),
+      },
     ],
   },
 
