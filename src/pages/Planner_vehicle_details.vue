@@ -73,7 +73,7 @@ const columns = [
   { name: 'vehicleNo', label: 'Vehicle No.', align: 'left', field: 'vehicleNo' },
   { name: 'type', label: 'Type', align: 'left', field: 'type' },
   { name: 'totalDistance', label: 'Total Distance Covered', align: 'left', field: 'totalDistance' },
-  { name: 'poc', label: 'POC (Point of Contact)', align: 'left', field: 'poc' },
+  // { name: 'poc', label: 'POC (Point of Contact)', align: 'left', field: 'poc' },
   { name: 'registrationDate', label: 'Registration Date', align: 'left', field: 'registrationDate' },
   { name: 'insuranceExpiry', label: 'Insurance Expiry', align: 'left', field: 'insuranceExpiry' }
 ]
@@ -83,7 +83,7 @@ const vehicleData = ref([
   {
     sNo: 1,
     vehicleNo: 'DTC001',
-    type: 'Bus',
+    type: 'AC',
     totalDistance: '150,000 km',
     poc: 'Ravi Kumar',
     registrationDate: '2015-01-01',
@@ -92,7 +92,7 @@ const vehicleData = ref([
   {
     sNo: 2,
     vehicleNo: 'DTC002',
-    type: 'Bus',
+    type: 'NON_AC',
     totalDistance: '120,000 km',
     poc: 'Sanjay Singh',
     registrationDate: '2016-03-20',
@@ -101,7 +101,7 @@ const vehicleData = ref([
   {
     sNo: 3,
     vehicleNo: 'DTC003',
-    type: 'Bus',
+    type: 'ELECTRIC',
     totalDistance: '180,000 km',
     poc: 'Meena Devi',
     registrationDate: '2014-07-10',
@@ -110,7 +110,7 @@ const vehicleData = ref([
   {
     sNo: 4,
     vehicleNo: 'DTC004',
-    type: 'Bus',
+    type: 'NON_AC',
     totalDistance: '200,000 km',
     poc: 'Vikram Yadav',
     registrationDate: '2017-05-15',
@@ -119,7 +119,7 @@ const vehicleData = ref([
   {
     sNo: 5,
     vehicleNo: 'DTC005',
-    type: 'Bus',
+    type: 'NON_AC',
     totalDistance: '250,000 km',
     poc: 'Pradeep Kumar',
     registrationDate: '2018-02-28',
@@ -128,84 +128,13 @@ const vehicleData = ref([
   {
     sNo: 6,
     vehicleNo: 'DTC006',
-    type: 'Bus',
+    type: 'AC',
     totalDistance: '300,000 km',
     poc: 'Sushila Rani',
     registrationDate: '2015-09-11',
     insuranceExpiry: '2025-01-05'
   },
-  {
-    sNo: 7,
-    vehicleNo: 'DTC007',
-    type: 'Bus',
-    totalDistance: '400,000 km',
-    poc: 'Harvinder Singh',
-    registrationDate: '2014-04-05',
-    insuranceExpiry: '2024-11-30'
-  },
-  {
-    sNo: 8,
-    vehicleNo: 'DTC008',
-    type: 'Bus',
-    totalDistance: '220,000 km',
-    poc: 'Rajesh Gupta',
-    registrationDate: '2016-01-23',
-    insuranceExpiry: '2025-02-10'
-  },
-  {
-    sNo: 9,
-    vehicleNo: 'DTC009',
-    type: 'Bus',
-    totalDistance: '130,000 km',
-    poc: 'Anjali Sharma',
-    registrationDate: '2017-12-12',
-    insuranceExpiry: '2024-12-29'
-  },
-  {
-    sNo: 10,
-    vehicleNo: 'DTC010',
-    type: 'Bus',
-    totalDistance: '170,000 km',
-    poc: 'Sandeep Kumar',
-    registrationDate: '2018-05-30',
-    insuranceExpiry: '2025-01-15'
-  },
-  {
-    sNo: 11,
-    vehicleNo: 'DTC011',
-    type: 'Bus',
-    totalDistance: '250,000 km',
-    poc: 'Kiran Mehta',
-    registrationDate: '2019-08-08',
-    insuranceExpiry: '2024-12-18'
-  },
-  {
-    sNo: 12,
-    vehicleNo: 'DTC012',
-    type: 'Bus',
-    totalDistance: '190,000 km',
-    poc: 'Gaurav Soni',
-    registrationDate: '2020-11-02',
-    insuranceExpiry: '2025-02-14'
-  },
-  {
-    sNo: 13,
-    vehicleNo: 'DTC013',
-    type: 'Bus',
-    totalDistance: '120,000 km',
-    poc: 'Arvind Bhardwaj',
-    registrationDate: '2021-06-15',
-    insuranceExpiry: '2025-03-01'
-  },
-  {
-    sNo: 14,
-    vehicleNo: 'DTC014',
-    type: 'Bus',
-    totalDistance: '190,000 km',
-    poc: 'Nisha Rani',
-    registrationDate: '2022-02-20',
-    insuranceExpiry: '2025-05-01'
-  }
+
 ])
 
 const pagination = ref({

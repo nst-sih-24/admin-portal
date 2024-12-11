@@ -18,6 +18,8 @@
             :class="{'active-toggle': showEmailForm}"
             class="toggle-btn"
           />
+
+
           <q-btn
             label="Phone Login"
             color="secondary"
@@ -37,13 +39,13 @@
             :rules="[val => val && val.length > 0 || 'Please enter a valid email']"
             class="q-mb-md"
           />
-          <q-input >
+          <q-input 
             filled
             label="Enter your password"
             v-model = "password"
             type= "password"
             class = "q-mb-md"
-          </q-input>
+          />
           <q-btn
             label="Sign in with Magic Link"
             color="primary"
