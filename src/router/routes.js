@@ -10,6 +10,20 @@ const routes = [
       { path: '/PlannerVehicleDetails', component: () => import('src/pages/Planner_vehicle_details.vue') },
     ]
   },
+  {
+    path: '/admin',
+    component: () => import('layouts/AdminLayout.vue'),
+    children: [
+      {
+        path: 'stops',
+        component: () => import('src/pages/PageStops.vue')
+      },
+      {
+        path: 'routes',
+        component: () => import('src/pages/PageRoutes.vue')
+      }
+    ]
+  },
 
   // Always leave this as last one,
   // but you can also remove it
