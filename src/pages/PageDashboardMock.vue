@@ -177,7 +177,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useQuasar } from 'quasar';
-import Chart from 'chart.js/auto';
+// import Chart from 'chart.js/auto';
 
 // Quasar instance for notifications
 const $q = useQuasar();
@@ -594,12 +594,12 @@ function fetchDataAndPrepareCharts() {
 
 // Lifecycle Hooks
 onMounted(() => {
-  fetchDataAndPrepareCharts();
-  initializeCharts();
+  // fetchDataAndPrepareCharts();
+  // initializeCharts();
 });
 
 onBeforeUnmount(() => {
-  destroyCharts();
+  // destroyCharts();
 });
 </script>
 
