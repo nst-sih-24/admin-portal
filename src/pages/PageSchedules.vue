@@ -37,6 +37,14 @@
               <div class="col-3">
                 <q-card flat bordered>
                   <q-card-section>
+                    <div class="text-subtitle1">Unique drivers</div>
+                    <div class="text-h5">{{ stats.uniquedriver }}</div>
+                  </q-card-section>
+                </q-card>
+              </div>
+              <div class="col-3">
+                <q-card flat bordered>
+                  <q-card-section>
                     <div class="text-subtitle1">Unique Conductors</div>
                     <div class="text-h5">{{ stats.uniqueConductors }}</div>
                   </q-card-section>
@@ -57,21 +65,10 @@
 
       <!-- Schedules Table -->
       <div class="col-12">
-        <q-table
-          :rows="schedules"
-          :columns="columns"
-          row-key="id"
-          :rows-per-page-options="[10, 20, 0]"
-        >
+        <q-table :rows="schedules" :columns="columns" row-key="id" :rows-per-page-options="[10, 20, 0]">
           <template #body-cell-actions="props">
             <q-td :props="props">
-              <q-btn
-                icon="edit"
-                color="primary"
-                round
-                flat
-                @click="editSchedule(props.row)"
-              ></q-btn>
+              <q-btn icon="edit" color="primary" round flat @click="editSchedule(props.row)"></q-btn>
             </q-td>
           </template>
         </q-table>
@@ -83,15 +80,7 @@
         <q-card-section>
           <div class="text-h6">
             {{ isEdit ? 'Edit Schedule' : 'Add Schedule' }}
-            <q-btn
-              flat
-              round
-              dense
-              icon="close"
-              aria-label="Close"
-              v-close-popup
-              class="float-right"
-            />
+            <q-btn flat round dense icon="close" aria-label="Close" v-close-popup class="float-right" />
           </div>
         </q-card-section>
 
@@ -100,63 +89,37 @@
         <q-card-section>
           <div class="row q-col-gutter-sm">
             <div class="col-12">
-              <q-input
-                v-model="selectedSchedule.vehicle_id"
-                placeholder="Vehicle ID"
-                outlined
-                dense
-                clearable
-              />
+              <q-input v-model="selectedSchedule.vehicle_id" placeholder="Vehicle ID" outlined dense clearable />
             </div>
             <div class="col-12">
-              <q-input
-                v-model="selectedSchedule.conductor_id"
-                placeholder="Conductor ID"
-                outlined
-                dense
-                clearable
-              />
+              <q-input v-model="selectedSchedule.driver_id" placeholder="Driver ID" outlined dense clearable />
             </div>
             <div class="col-12">
-              <q-input
-                v-model="selectedSchedule.time_start"
-                type="datetime-local"
-                placeholder="Start Time"
-                outlined
-                dense
-                clearable
-              />
+              <q-input v-model="selectedSchedule.driver_name" placeholder="Driver Name" outlined dense clearable />
+            </div>
+            <div class="col-12">
+              <q-input v-model="selectedSchedule.conductor_id" placeholder="Conductor ID" outlined dense clearable />
+            </div>
+            <div class="col-12">
+              <q-input v-model="selectedSchedule.conductor_name" placeholder="Conductor Name" outlined dense
+                clearable />
+            </div>
+            <div class="col-12">
+              <q-input v-model="selectedSchedule.time_start" type="datetime-local" placeholder="Start Time" outlined
+                dense clearable />
             </div>
             <div class="col-12">
               <!-- frequency is an interval, user can input as HH:MM:SS -->
-              <q-input
-                v-model="selectedSchedule.frequency"
-                placeholder="Frequency (HH:MM:SS)"
-                outlined
-                dense
-                clearable
-              />
+              <q-input v-model="selectedSchedule.frequency" placeholder="Frequency (HH:MM:SS)" outlined dense
+                clearable />
             </div>
 
             <div class="col-auto" v-if="isEdit">
-              <q-btn
-                icon="delete"
-                color="negative"
-                round
-                flat
-                @click="deleteSchedule"
-                v-close-popup
-              ></q-btn>
+              <q-btn icon="delete" color="negative" round flat @click="deleteSchedule" v-close-popup></q-btn>
             </div>
 
             <div class="col">
-              <q-btn
-                label="Save"
-                color="primary"
-                rounded
-                class="full-width"
-                @click="saveSchedule"
-              ></q-btn>
+              <q-btn label="Save" color="primary" rounded class="full-width" @click="saveSchedule"></q-btn>
             </div>
           </div>
         </q-card-section>
@@ -180,13 +143,17 @@ const showScheduleDialog = ref(false);
 const stats = ref({
   totalSchedules: 0,
   uniqueVehicles: 0,
+  uniqueDrivers: 0,
   uniqueConductors: 0,
   earliestStart: "",
 });
 
 const columns = [
-  { name: "vehicle_id", label: "Vehicle ID", align: "left", field: "vehicle_id" },
+  { name: "vehicle_id", label: "Vehicle ID", align: "left", field: row => row.vehicle.registration_no },
+  { name: "driver_id", label: "Driver ID", align: "left", field: "driver_id" },
+  { name: "driver_name", label: "Driver Name", align: "left", field: "driver_name" },
   { name: "conductor_id", label: "Conductor ID", align: "left", field: "conductor_id" },
+  { name: "conductor_name", label: "Conductor Name", align: "left", field: "conductor_name" },
   { name: "time_start", label: "Start Time", align: "left", field: "time_start" },
   { name: "frequency", label: "Frequency", align: "left", field: "frequency" },
   { name: "created_at", label: "Created At", align: "left", field: "created_at" },
@@ -200,7 +167,7 @@ onMounted(() => {
 
 async function fetchSchedules() {
   try {
-    const { data, error } = await supabase.from("schedule").select("*");
+    const { data, error } = await supabase.from("schedule").select("*, vehicle: vehicle_id(*), driver: driver_id(*),driver: driver_name(*),conductor: conductor_id(*),conductor: conductor_name(*)");
     if (error) {
       console.error(error);
       $q.notify({ type: "negative", message: "Failed to fetch schedules" });
@@ -230,6 +197,14 @@ async function fetchStats() {
     if (!vehicleError && vehicleData) {
       const vehicleSet = new Set(vehicleData.map(r => r.vehicle_id));
       stats.value.uniqueVehicles = vehicleSet.size;
+    }
+    //unique drivers
+    const { data: driverData, error: driverError } = await supabase
+      .from("schedule")
+      .select("driver_id");
+    if (!driverError && driverData) {
+      const driverSet = new Set(driverData.map(r => r.driver_id));
+      stats.value.uniquedrivers = driverSet.size;
     }
 
     // unique conductors
@@ -263,7 +238,10 @@ async function fetchStats() {
 function addSchedule() {
   selectedSchedule.value = {
     vehicle_id: "",
+    driver_id: "",
+    driver_name: '',
     conductor_id: "",
+    conductor_name: '',
     time_start: "",
     frequency: "",
   };
