@@ -96,7 +96,7 @@ const routes = [
       },
       {
         path: "dashboard",
-        component: () => import("src/pages/PageDashboard.vue"),
+        component: () => import("src/pages/PageDashboardMock.vue"),
       },
       {
         path: 'users',

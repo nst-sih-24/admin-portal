@@ -178,7 +178,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useQuasar } from 'quasar';
 import Chart from 'chart.js/auto';
-import { supabase } from 'src/boot/supabase';
+import { supabase } from 'boot/supabase';
 
 // Quasar instance for notifications
 const $q = useQuasar();
