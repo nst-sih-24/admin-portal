@@ -552,31 +552,31 @@ const columns = [
     name: "schedule_id",
     label: "Schedule ID",
     align: "left",
-    field: "schedule.id",
+    field: "schedule_id",
   },
   {
     name: "driver_id",
     label: "Driver",
     align: "left",
-    field: "driver.name",
+    field: "driver_id",
   },
   {
     name: "conductor_id",
     label: "Conductor",
     align: "left",
-    field: "conductor.name",
+    field: "conductor_id",
   },
   {
     name: "route_id",
     label: "Route",
     align: "left",
-    field: "route.name",
+    field: "route_id",
   },
   {
     name: "vehicle_id",
     label: "Vehicle",
     align: "left",
-    field: "vehicle.registration_no",
+    field: "vehicle_id",
   },
   {
     name: "expected_start_time",
@@ -783,11 +783,11 @@ async function fetchStats() {
 
 function addTrip() {
   selectedTrip.value = {
-    schedule_id: null,
-    driver_id: null,
-    conductor_id: null,
-    route_id: null,
-    vehicle_id: null,
+    schedule_id: "",
+    driver_id: "",
+    conductor_id: "",
+    route_id: "",
+    vehicle_id: "",
     expected_start_time: "",
     expected_end_time: "",
     actual_start_time: "",

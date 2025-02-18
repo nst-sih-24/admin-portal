@@ -21,7 +21,7 @@ const routerHash = window.location.hash.substring(
 );
 
 // Initialize Supabase client
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient("https://codnrccajpjpchleelag.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvZG5yY2NhanBqcGNobGVlbGFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzIxODM3MTYsImV4cCI6MjA0Nzc1OTcxNn0.Ymu1E_rzARqGolgHNxWiDmF2lchesA9Prngjk6lya6Y");
 
 // Listen to authentication state changes
 supabase.auth.onAuthStateChange(async (_event, _session) => {
