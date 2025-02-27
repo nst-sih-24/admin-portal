@@ -167,7 +167,7 @@ onMounted(() => {
 
 async function fetchSchedules() {
   try {
-    const { data, error } = await supabase.from("schedule").select("*, vehicle: vehicle_id(*), driver: driver_id(*),driver: driver_name(*),conductor: conductor_id(*),conductor: conductor_name(*)");
+    const { data, error } = await supabase.from("schedule").select("*, vehicle: vehicle_id(*),driver: driver_name(*),conductor: conductor_name(*)");
     if (error) {
       console.error(error);
       $q.notify({ type: "negative", message: "Failed to fetch schedules" });
